@@ -174,10 +174,9 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <div id="camModal" class="lg" hidden style="background:rgba(0,0,0,0.85);flex-direction:column;z-index:100">
   <div style="position:relative;width:100%;max-width:400px;background:#000;border-radius:12px;overflow:hidden;text-align:center">
     <video id="camVideo" autoplay playsinline style="width:100%;height:300px;object-fit:cover;display:block"></video>
-    <div style="position:absolute;inset:40px;border:2px dashed #4FB79D;border-radius:8px;pointer-events:none;box-shadow:0 0 0 1000px rgba(0,0,0,0.4)"></div>
+    <div style="position:absolute;width:84%;height:64%;top:18%;left:8%;box-sizing:border-box;border:3px solid #22c55e;border-radius:10px;pointer-events:none;box-shadow:0 0 0 1000px rgba(0,0,0,0.4)"></div>
     <div style="padding:12px;background:var(--card)">
-      <p style="margin:0 0 8px;font-size:14px;color:var(--acc)">حرّك الهوية داخل الإطار الأخضر ثم ثبّتها؛ سيتم التقاط الصورة تلقائياً بعد استقرارها</p>
-      <p id="camStatus" role="status" style="margin:0 0 8px;font-size:13px;color:var(--mute)">بانتظار تشغيل الكاميرا...</p>
+      <p id="camStatus" role="status" style="display:none"> </p>
       <button id="captureBtn" class="main" type="button" style="width:100%">التقاط الآن يدوياً</button>
       <button id="closeCam" type="button" style="width:100%;margin-top:6px">إلغاء</button>
     </div>
