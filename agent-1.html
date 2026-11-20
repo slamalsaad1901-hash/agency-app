@@ -64,12 +64,12 @@ td input[type=checkbox]{width:18px;height:18px}
 td input[type=number]{width:100%;max-width:58px;padding:4px 1px;font-size:13px}
 .ef{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:12px}
 select{width:100%;font:inherit;color:var(--ink);background:#FFFFFF;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:12px}
-.ig{display:grid;grid-template-columns:1fr;gap:12px;width:100%}
-.ic{background:var(--card);border:1px solid var(--line);border-radius:10px;display:block;width:100%;text-align:center;padding:12px}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.ic{background:var(--card);border:1px solid var(--line);border-radius:10px;display:block;width:100%;text-align:center;padding:10px 6px}
 .ic.on{border-color:var(--acc);outline:2px solid var(--acc)}
-.ic h3{margin:0 0 10px;font-size:18px;color:var(--acc);text-align:center}
-.cn{display:flex;gap:8px;width:100%}
-.cn button{flex:1;background:#FFFFFF;border:1px solid var(--line);border-radius:8px;padding:8px 4px;font-size:13px;color:var(--mute);cursor:pointer}
+.ic h3{margin:0 0 8px;font-size:17px;color:var(--acc)}
+.cn{display:flex;gap:6px;width:100%}
+.cn button{flex:1;background:#FFFFFF;border:1px solid var(--line);border-radius:8px;padding:6px 2px;font-size:12px;color:var(--mute);cursor:pointer}
 .cn button.on{border-color:var(--acc);outline:2px solid var(--acc);background:var(--thbg)}
 .cn b{display:block;font-size:22px;line-height:1.3}
 .ok{color:#2E7D32}
@@ -475,7 +475,7 @@ function beginStabilityDetection(){
       var current=new Uint8Array(96*60);
       for(var i=0,j=0;i<pixels.length;i+=4,j++)current[j]=(pixels[i]*3+pixels[i+1]*6+pixels[i+2])/10;
       var mean=0; for(var m=0;m<current.length;m++)mean+=current[m]; mean/=current.length;
-      var variance=0; for(var n=0;n<current.length;n++){var delta=current[n]-mean;variance+=delta+delta;} variance/=current.length;
+      var variance=0; for(var n=0;n<current.length;n++){var delta=current[n]-mean;variance+=delta*delta;} variance/=current.length;
       
       if(variance > 180){
         if(previousFrame){
@@ -585,6 +585,7 @@ function renderInv(){
     c.appendChild(mk("h3","",nm));
     var n=mk("div","cn");
     
+    // الترتيب الصحيح: المستلمة أولاً ثم غير المستلمة
     [[true,"المستلمة",yes,"ok"],[false,"غير المستلمة",data.length-yes,"no"]].forEach(function(p){
       var b=mk("button","cb"+(on&&sel.k===p[0]?" on":""));b.type="button";
       b.appendChild(document.createTextNode(p[1]));b.appendChild(mk("b",p[3],p[2]));
@@ -653,7 +654,7 @@ $("ssave").onclick=function(){
   [].forEach.call($("stb").querySelectorAll("input"),function(i){var v=parseFloat(i.value);if(v>0)o[i.dataset.j]=v});
   var prev=stock[m]||{};stock[m]=o;
   if(storeStock()){s.style.color="var(--acc)";s.textContent="تم حفظ الحصص المستلمة للمستودع.";var arr=newArrivals(prev,o);if(arr.length)sendNews(sec,m,arr,s)}else{s.style.color="var(--bad)";s.textContent="تعذر الحفظ في هذا المتصفح."}};
-var sec="ration",ICON={ration:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18l-2 11H5L3 9z"/><path d="M8 9l4-6 4 6"/></svg>',welfare:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78 z"/></svg>'},LBL={ration:"الحصة التموينية",welfare:"الرعاية الاجتماعية"};
+var sec="ration",ICON={ration:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18l-2 11H5L3 9z"/><path d="M8 9l4-6 4 6"/></svg>',welfare:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'},LBL={ration:"الحصة التموينية",welfare:"الرعاية الاجتماعية"};
 function setSec(s){if(pend){clearTimeout(pt);flush()}
   sec=s;KEY=s==="welfare"?"welfare-v1":"citizens-v1";
   data=[];cur=null;sel=null;editing=null;HD=s==="welfare"?HDW:HDR;
