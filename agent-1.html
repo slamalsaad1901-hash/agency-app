@@ -374,7 +374,8 @@ var previousFrame = null;
 var motionSeen = false;
 var stableSamples = 0;
 var cameraBusy = false;
-function stopStabilityDetection(){if(stabilityTimer){clearInterval(stabilityTimer);stabilityTimer=null}previousFrame=null;motionSeen=false;stableSamples=0;cameraBusy=false}
+var stabilityStartedAt = 0;
+function stopStabilityDetection(){if(stabilityTimer){clearInterval(stabilityTimer);stabilityTimer=null}previousFrame=null;motionSeen=false;stableSamples=0;cameraBusy=false;stabilityStartedAt=0}
 function cameraStatus(message){var el=$("camStatus");if(el)el.textContent=message}
 
 function buildIdsInputs(){
@@ -454,6 +455,7 @@ function beginStabilityDetection(){
   var sampleCanvas=document.createElement("canvas");
   sampleCanvas.width=96; sampleCanvas.height=60;
   var sampleCtx=sampleCanvas.getContext("2d",{willReadFrequently:true});
+  stabilityStartedAt=Date.now();
   stabilityTimer=setInterval(function(){
     if(!activeCamTarget || !videoStream || video.readyState<2 || cameraBusy)return;
     try{
@@ -468,9 +470,11 @@ function beginStabilityDetection(){
         var diff=0;
         for(var k=0;k<current.length;k++)diff+=Math.abs(current[k]-previousFrame[k]);
         diff/=current.length;
-        if(diff<7 && variance>18){
+        if(Date.now()-stabilityStartedAt<1500){
+          stableSamples=0;
+        }else if(diff<12){
           stableSamples++;
-          if(stableSamples>=5){
+          if(stableSamples>=6){
             cameraBusy=true;
             captureIdentity();
           }
