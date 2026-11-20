@@ -6,9 +6,9 @@
 <title>إدارة الوكالة</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#FBF3E2;--card:#FFFFFF;--ink:#1B1610;--mute:#7C6A50;--line:#E9D9B8;--acc:#A5560A;--btn:#F5A524;--btnfg:#1B1610;--thbg:#FFEFCB;--bad:#B93A2B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15110C;--card:#211A12;--ink:#F6EEDD;--mute:#BBA784;--line:#3B3023;--acc:#F7B64D;--btn:#F5A524;--btnfg:#1B1610;--thbg:#2E2415;--bad:#F08B80}}
-:root[data-theme="dark"]{--bg:#15110C;--card:#211A12;--ink:#F6EEDD;--mute:#BBA784;--line:#3B3023;--acc:#F7B64D;--btn:#F5A524;--btnfg:#1B1610;--thbg:#2E2415;--bad:#F08B80}
+:root{--bg:#EEF2F1;--card:#fff;--ink:#17292A;--mute:#5E7270;--line:#D2DCDA;--acc:#1F6F5C;--accfg:#fff;--bad:#B3392F;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A1A;--card:#182626;--ink:#E6EFEE;--mute:#93A9A6;--line:#2C4040;--acc:#4FB79D;--accfg:#08201A;--bad:#F08B80}}
+:root[data-theme="dark"]{--bg:#0F1A1A;--card:#182626;--ink:#E6EFEE;--mute:#93A9A6;--line:#2C4040;--acc:#4FB79D;--accfg:#08201A;--bad:#F08B80}
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Tajawal,Tahoma,Arial,sans-serif;font-size:17px;line-height:1.6}
@@ -25,7 +25,7 @@ input,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);bor
 input:focus,textarea:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
 .two{display:flex;gap:10px}.two>div{flex:1}
 button{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:9px 14px;cursor:pointer}
-button.main{background:var(--btn);color:var(--btnfg);border-color:var(--btn)}
+button.main{background:var(--acc);color:var(--accfg);border-color:var(--acc)}
 button.bad{color:var(--bad);border-color:var(--bad)}
 .acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
 #msg{min-height:24px;margin-top:8px;font-size:15px;color:var(--bad)}
@@ -49,7 +49,7 @@ textarea{height:130px;margin-top:8px;direction:ltr;font-size:13px}
 h2{font-size:19px;margin:20px 0 10px}
 .tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}
 table{width:100%;border-collapse:collapse;text-align:center;font-size:15px}
-th{background:var(--thbg);color:var(--acc);padding:8px 4px;font-size:14px;line-height:1.3}
+th{background:var(--bg);color:var(--acc);padding:8px 4px;font-size:14px;line-height:1.3}
 td,th{border:1px solid var(--line)}
 td{padding:6px 3px}
 td:first-child,th:first-child{white-space:nowrap;padding:6px 8px}
@@ -72,38 +72,64 @@ select{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1p
 .ic h3{margin:0 0 8px;font-size:17px;color:var(--acc)}
 .cn{display:flex;gap:6px}.cn div{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 2px;font-size:12px;color:var(--mute)}
 .cn b{display:block;font-size:22px;line-height:1.3}
-.ok{color:#2E7D32}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ok{color:#7FCB82}}
-.no{color:var(--bad)}
+.ok{color:#1a9b6c}.no{color:var(--bad)}
 .ls{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 14px;margin-top:12px}
 .ls h3{margin:10px 0 4px;font-size:16px;color:var(--acc)}
 .li{padding:8px 0;border-top:1px solid var(--line)}.li p{margin:0;color:var(--mute);font-size:13px}
+.ic{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}
+.ic h3{margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line);font-size:17px;color:var(--acc)}
+.cb{flex:1;display:block;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px 2px;font-size:12px;color:var(--mute)}
+.cb b{display:block;font-size:22px;line-height:1.3}
+.cb.on{border-color:var(--acc);outline:2px solid var(--acc)}
+.ic h4{margin:12px 0 2px;padding-top:10px;border-top:1px solid var(--line);font-size:14px;color:var(--acc)}
+.ic .li{padding:8px 0}.ic .lk{font-size:15px;font-weight:500}.ic .li p{font-size:12px}
+th:first-child{width:15%}th:nth-child(8){width:13%}th:last-child{width:16%}
 .dt{display:flex;justify-content:space-between;align-items:center;gap:8px}.dt b{color:var(--bad);white-space:nowrap}
 .st th{font-size:12px;padding:6px 2px}.st th:first-child{width:30%}.st th:last-child{width:20%}
 .st td{padding:8px 3px;font-size:16px}.st td:first-child{font-size:15px;width:auto}
 .st td input{max-width:none;width:92%;font-size:16px;padding:6px 2px}
 .sub{font-size:12px;color:var(--mute)}
-body{padding-bottom:84px;padding-top:52px}
-body.nonav{padding-top:0;padding-bottom:0}
-.nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:3px solid var(--btn);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
-.nav button{flex:1;border:0;border-radius:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px 8px;font-size:11px;color:var(--mute)}
-.nav button span{line-height:1.2;text-align:center}
+body{padding-bottom:84px}
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+.nav button{flex:1;border:0;border-radius:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px 8px;font-size:12px;color:var(--mute)}
 .nav button.on{color:var(--acc);font-weight:700}
-.top{position:fixed;top:0;left:0;right:0;z-index:6;background:var(--bg);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 6px) 12px 6px;display:flex;justify-content:flex-start}
-.top button{padding:6px 12px;font-size:15px;font-weight:700;color:var(--acc)}
-#home{min-height:calc(100vh - 136px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+.search{margin:0 0 10px}#f{margin-bottom:12px}
+.logo{background:#fff;border-radius:14px;padding:12px;margin:24px 0 8px;text-align:center;border:1px solid var(--line)}
+.logo img{max-width:100%;height:auto;max-height:240px}
+.nav button{font-size:11px}.nav button span{line-height:1.2;text-align:center}
+#home{display:flex;flex-direction:column;min-height:calc(100vh - 84px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:calc(100dvh - 84px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 .logo{flex:1;position:relative;min-height:220px;background:none;border:0;border-radius:0;padding:0;margin:8px 0 0}
 .logo img{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:contain}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo img{filter:invert(1) hue-rotate(180deg)}}
 :root[data-theme="dark"] .logo img{filter:invert(1) hue-rotate(180deg)}
 input[type=number]{-moz-appearance:textfield;appearance:textfield}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+:root{--bg:#FBF3E2;--card:#FFFFFF;--ink:#1B1610;--mute:#7C6A50;--line:#E9D9B8;--acc:#A5560A;--btn:#F5A524;--btnfg:#1B1610;--thbg:#FFEFCB;--bad:#B93A2B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15110C;--card:#211A12;--ink:#F6EEDD;--mute:#BBA784;--line:#3B3023;--acc:#F7B64D;--btn:#F5A524;--btnfg:#1B1610;--thbg:#2E2415;--bad:#F08B80}}
+:root[data-theme="dark"]{--bg:#15110C;--card:#211A12;--ink:#F6EEDD;--mute:#BBA784;--line:#3B3023;--acc:#F7B64D;--btn:#F5A524;--btnfg:#1B1610;--thbg:#2E2415;--bad:#F08B80}
+button.main{background:var(--btn);color:var(--btnfg);border-color:var(--btn)}
+th{background:var(--thbg)}
+.ok{color:#2E7D32}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ok{color:#7FCB82}}
+.nav{border-top:3px solid var(--btn)}
+.nav button.on{color:var(--acc)}
+.stat b{color:var(--acc)}
 #qx{position:absolute;inset-inline-end:7px;top:50%;transform:translateY(-50%);width:32px;height:32px;padding:0;border:0;border-radius:50%;background:var(--line);color:var(--ink);font-size:22px;line-height:1}
-#start{display:flex;flex-direction:column;min-height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+body.nonav{padding-bottom:0}
+#start{display:flex;flex-direction:column;min-height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 .big{display:flex;align-items:center;gap:14px;width:100%;padding:18px 16px;border:0;border-radius:16px;font-size:20px;font-weight:700;margin-bottom:12px;text-align:right}
 .big.r{background:#F5A524;color:#1B1610}.big.w{background:#2F7BE5;color:#fff}
 :root[data-sec="welfare"]{--bg:#EDF3FB;--card:#FFFFFF;--ink:#0F1B2D;--mute:#58698A;--line:#D1DDEF;--acc:#1A5AB8;--btn:#2F7BE5;--btnfg:#FFFFFF;--thbg:#DCE8FA}
 @media (prefers-color-scheme:dark){:root[data-sec="welfare"]:not([data-theme="light"]){--bg:#0D1520;--card:#152134;--ink:#E8F0FB;--mute:#9DB1CE;--line:#26374F;--acc:#7DB2F5;--btn:#3B82E6;--btnfg:#FFFFFF;--thbg:#1B2A42}}
+:root[data-sec="welfare"][data-theme="dark"]{--bg:#0D1520;--card:#152134;--ink:#E8F0FB;--mute:#9DB1CE;--line:#26374F;--acc:#7DB2F5;--btn:#3B82E6;--btnfg:#FFFFFF;--thbg:#1B2A42}
+:root{--bg:#FFFFFF}
+:root[data-sec="welfare"]{--bg:#FFFFFF}
+body{padding-top:52px}body.nonav{padding-top:0;padding-bottom:0}
+.top{position:fixed;top:0;left:0;right:0;z-index:6;background:var(--bg);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 6px) 12px 6px;display:flex;justify-content:flex-start}
+.top button{padding:6px 12px;font-size:15px;font-weight:700;color:var(--acc)}
+#home{min-height:calc(100vh - 136px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:calc(100dvh - 136px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+th.ind{width:13%}
+.st td input.sh{font-size:13px;padding:4px 2px;margin-top:4px}
 .lg{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}.lgb{width:100%;max-width:360px}
 </style>
 </head>
@@ -158,30 +184,16 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <button id="back" type="button">رجوع إلى القائمة</button>
 <h1 id="dn"></h1>
 <div class="info" id="di"></div>
-<div class="acts" style="margin:0 0 10px"><button id="eb" type="button">تعديل البيانات</button><button id="idbs" class="main" type="button">إدارة هويات الأفراد (كاميرا ذكية)</button><button id="db" class="bad" type="button">حذف المواطن</button></div>
+<div class="acts" style="margin:0 0 10px"><button id="eb" type="button">تعديل البيانات</button><button id="idbs" class="main" type="button">إدارة هويات الأفراد (وجه وظهر)</button><button id="db" class="bad" type="button">حذف المواطن</button></div>
 <div class="ef" id="ef" hidden><label for="en">الاسم</label><input id="en"><div class="two"><div><label for="ec">رقم البطاقة</label><input id="ec" inputmode="numeric"></div><div><label for="ek">عدد الأفراد</label><input id="ek" type="number" min="1" inputmode="numeric"></div></div><div class="acts"><button class="main" id="es" type="button">حفظ التعديل</button><button id="ex" type="button">إلغاء</button></div><div id="em" style="color:var(--bad);margin-top:6px"></div></div>
 
 <!-- قسم إداراة الهويات -->
 <div id="idssec" class="ef" hidden>
   <h3>إدارة هويات أفراد العائلة</h3>
-  <p style="color:var(--mute);font-size:14px">اضغط على زر الكاميرا لالتقاط صورة الهوية تلقائياً داخل الإطار المخصص:</p>
+  <p style="color:var(--mute);font-size:14px">أدخل أسماء الأفراد وارفض صور الهوية (الوجه والظهر) لكل فرد:</p>
   <div id="idsList"></div>
   <button class="main" id="saveIds" type="button" style="margin-top:10px;width:100%">حفظ الهويات</button>
   <button id="closeIds" type="button" style="margin-top:6px;width:100%">إغلاق قسم الهويات</button>
-</div>
-
-<!-- واجهة الكاميرا المباشرة -->
-<div id="camModal" class="lg" hidden style="background:rgba(0,0,0,0.85);flex-direction:column;z-index:100">
-  <div style="position:relative;width:100%;max-width:400px;background:#000;border-radius:12px;overflow:hidden;text-align:center">
-    <video id="camVideo" autoplay playsinline style="width:100%;height:300px;object-fit:cover;display:block"></video>
-    <div style="position:absolute;inset:40px;border:2px dashed #4FB79D;border-radius:8px;pointer-events:none;box-shadow:0 0 0 1000px rgba(0,0,0,0.4)"></div>
-    <div style="padding:12px;background:var(--card)">
-      <p style="margin:0 0 8px;font-size:14px;color:var(--acc)">ضع الهوية داخل الإطار الأخضر وسيتم التقاطها تلقائياً</p>
-      <button id="captureBtn" class="main" type="button" style="width:100%">التقاط الصورة</button>
-      <button id="closeCam" type="button" style="width:100%;margin-top:6px">إلغاء</button>
-    </div>
-  </div>
-  <canvas id="camCanvas" hidden></canvas>
 </div>
 
 <!-- نافذة عرض بيانات الفرد وصور الهوية -->
@@ -245,20 +257,19 @@ window._fbr({auth,db,signIn:(e,p)=>signInWithEmailAndPassword(auth,e,p),onAuth:c
 <script>
 (function(){
 var KEY="citizens-v1",data=[],editing=null;
+var SEED=[];
 var $=function(i){return document.getElementById(i)};
 function load(){try{var r=localStorage.getItem(KEY);data=r?JSON.parse(r):[]}catch(e){data=[]}if(!Array.isArray(data))data=[]}
 function store(){try{localStorage.setItem(KEY,JSON.stringify(data));push();return true}catch(e){$("msg").textContent="تعذر الحفظ في هذا المتصفح. خذ نسخة احتياطية.";return false}}
 function norm(s){return String(s).replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d)}).trim()}
-
-var searchTimer = null;
 function render(){
   $("qx").hidden=!$("q").value;
   var q=norm($("q").value).toLowerCase(),L=$("list");L.innerHTML="";
-  var rows=data.filter(function(x){return !q||x.name.toLowerCase().indexOf(q)>-1||x.card.indexOf(q)>-1||(x.nc&&x.nc.indexOf(q)>-1)}).slice(0, 30);
+  var rows=data.filter(function(x){return !q||x.name.toLowerCase().indexOf(q)>-1||x.card.indexOf(q)>-1||(x.nc&&x.nc.indexOf(q)>-1)});
   $("sc").textContent=data.length;
   $("sp").textContent=data.reduce(function(a,x){return a+x.fam},0);
-  if(!q)return;
-  if(!rows.length){var e=document.createElement("div");e.className="empty";e.textContent=data.length?"لا توجد نتائج مطابقة":"لم تُسجَّل أي أسماء بعد.";L.appendChild(e);return}
+  if(!q)return
+  if(!rows.length){var e=document.createElement("div");e.className="empty";e.textContent=data.length?"لا توجد نتائج مطابقة":"لم تُسجَّل أي أسماء بعد. أضف أول مواطن من النموذج أعلاه.";L.appendChild(e);return}
   rows.forEach(function(x){
     var r=document.createElement("div");r.className="row";
     var t=document.createElement("div"),h=document.createElement("h3"),p=document.createElement("p"),s=document.createElement("span");
@@ -281,10 +292,7 @@ $("f").onsubmit=function(ev){
 };
 $("cancel").onclick=function(){reset();$("f").hidden=true};
 $("addb").onclick=function(){var f=$("f");f.hidden=!f.hidden;if(!f.hidden)$("n").focus()};
-$("q").oninput=function(){
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(render, 150);
-};
+$("q").oninput=render;
 $("qx").onclick=function(){$("q").value="";render();$("q").focus()};
 $("exp").onclick=function(){$("bk").value=JSON.stringify({c:data,s:stock})};
 $("cp").onclick=function(){var t=$("bk");if(!t.value)t.value=JSON.stringify({c:data,s:stock});t.select();try{navigator.clipboard.writeText(t.value)}catch(e){try{document.execCommand("copy")}catch(e2){}}};
@@ -324,7 +332,9 @@ function renderPersonsList(x){
   box.style.marginBottom = "12px";
   box.innerHTML = "<div style='font-weight:bold;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:4px'>أفراد العائلة (اضغط على الاسم لعرض الهوية):</div>";
   
-  if(x.persons && x.persons.length){
+  if(!x.persons || !x.persons.length){
+    box.appendChild(mk("div","","لم يتم إدخال أسماء أو هويات الأفراد بعد. اضغط على زر 'إدارة هويات الأفراد' لإضافتهم."));
+  } else {
     x.persons.forEach(function(p, idx){
       var d = mk("div");
       var lnk = mk("span","lk", (idx+1) + ". " + (p.name || "فرد بدون اسم"));
@@ -333,8 +343,8 @@ function renderPersonsList(x){
       d.appendChild(mk("span","",(p.front||p.back)?"تم رفع الهوية ✓":"بدون هوية"));
       box.appendChild(d);
     });
-    $("di").after(box);
   }
+  $("di").after(box);
 }
 
 function openPersonModal(p){
@@ -365,9 +375,6 @@ $("idbs").onclick = function(){
 };
 $("closeIds").onclick = function(){ $("idssec").hidden = true; };
 
-var activeCamTarget = null;
-var videoStream = null;
-
 function buildIdsInputs(){
   var c = $("idsList"); c.innerHTML = "";
   if(!cur.persons) cur.persons = [];
@@ -380,8 +387,8 @@ function buildIdsInputs(){
     wrap.innerHTML = '<label>اسم الفرد '+(i+1)+'</label>' +
                      '<input type="text" class="pname-in" value="'+(p.name||"")+'" placeholder="الاسم الكامل">' +
                      '<div class="two" style="margin-top:6px">' +
-                       '<div><label style="font-size:13px">صورة الوجه</label><button type="button" class="cam-trig-f" style="width:100%;margin-top:4px">كاميرا الوجه</button></div>' +
-                       '<div><label style="font-size:13px">صورة الظهر</label><button type="button" class="cam-trig-b" style="width:100%;margin-top:4px">كاميرا الظهر</button></div>' +
+                       '<div><label style="font-size:13px">صورة الوجه</label><input type="file" accept="image/*" class="pfront-in"></div>' +
+                       '<div><label style="font-size:13px">صورة الظهر</label><input type="file" accept="image/*" class="pback-in"></div>' +
                      '</div>' +
                      '<div class="pstatus" style="font-size:12px;color:var(--acc);margin-top:4px">'+(p.front||p.back?'مرفوع مسبقاً ✓':'')+'</div>';
     c.appendChild(wrap);
@@ -389,57 +396,37 @@ function buildIdsInputs(){
     wrap.dataset.front = p.front || "";
     wrap.dataset.back = p.back || "";
     
-    wrap.querySelector(".cam-trig-f").onclick = function(){ openCamera(wrap, 'front'); };
-    wrap.querySelector(".cam-trig-b").onclick = function(){ openCamera(wrap, 'back'); };
+    var fIn = wrap.querySelector(".pfront-in");
+    fIn.onchange = function(e){
+      compressImage(e.target.files[0], function(base64){ wrap.dataset.front = base64; wrap.querySelector(".pstatus").textContent="تم تحديث الوجه ✓"; });
+    };
+    var bIn = wrap.querySelector(".pback-in");
+    bIn.onchange = function(e){
+      compressImage(e.target.files[0], function(base64){ wrap.dataset.back = base64; wrap.querySelector(".pstatus").textContent="تم تحديث الظهر ✓"; });
+    };
   }
 }
 
-function openCamera(wrap, type){
-  activeCamTarget = {wrap: wrap, type: type};
-  $("camModal").hidden = false;
-  navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}, audio:false}).then(function(stream){
-    videoStream = stream;
-    $("camVideo").srcObject = stream;
-  }).catch(function(err){
-    alert("تعذر فتح الكاميرا: " + err);
-    $("camModal").hidden = true;
-  });
+function compressImage(file, callback){
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var canvas = document.createElement('canvas');
+      var MAX_WIDTH = 800, MAX_HEIGHT = 800;
+      var width = img.width, height = img.height;
+      if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
+      else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+      canvas.width = width; canvas.height = height;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      callback(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
-
-$("closeCam").onclick = function(){
-  closeCameraStream();
-  $("camModal").hidden = true;
-};
-
-function closeCameraStream(){
-  if(videoStream){
-    videoStream.getTracks().forEach(function(t){ t.stop(); });
-    videoStream = null;
-  }
-}
-
-$("captureBtn").onclick = function(){
-  if(!activeCamTarget) return;
-  var video = $("camVideo");
-  var canvas = $("camCanvas");
-  canvas.width = video.videoWidth || 640;
-  canvas.height = video.videoHeight || 480;
-  var ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-  
-  if(activeCamTarget.type === 'front'){
-    activeCamTarget.wrap.dataset.front = dataUrl;
-    activeCamTarget.wrap.querySelector(".pstatus").textContent = "تم التقاط الوجه ✓";
-  } else {
-    activeCamTarget.wrap.dataset.back = dataUrl;
-    activeCamTarget.wrap.querySelector(".pstatus").textContent = "تم التقاط الظهر ✓";
-  }
-  
-  closeCameraStream();
-  $("camModal").hidden = true;
-  activeCamTarget = null;
-};
 
 $("saveIds").onclick = function(){
   var items = $("idsList").children;
@@ -493,7 +480,7 @@ function renderInv(){
       r.forEach(function(x){var d=mk("div","li"),a=mk("div","lk",x.name);a.onclick=function(){show(x.id,"inv")};d.appendChild(a);d.appendChild(mk("p","","البطاقة: "+x.card+" | الأفراد: "+x.fam));c.appendChild(d)})}
     g.appendChild(c)})}
 $("im").onchange=renderInv;
-$("homeb").onclick=function(){view("home";render())};
+$("homeb").onclick=function(){view("home");render()};
 $("invb").onclick=openInv;
 $("eb").onclick=function(){$("en").value=cur.name;$("ec").value=cur.card;$("ek").value=cur.fam;$("em").textContent="";$("ef").hidden=false};
 $("ex").onclick=function(){$("ef").hidden=true};
@@ -529,7 +516,7 @@ function renderStock(){
   its.forEach(function(it){
     var j=HD.indexOf(it[0]),ppl=0;
     data.forEach(function(x){if(got(x,m,j))ppl+=entAt(x,m)});
-    var rec=(stock[m]&&stock[m][j])||0,tr=mk("tr");
+    var rec=(stock[m]&&stock[m][j])||0,tr=mk("tr"),shi=null;
     var c1=mk("td");c1.appendChild(mk("b","",it[0]));
     c1.appendChild(mk("div","sub","("+it[1]+" "+it[2]+" / نفر)"));
     tr.appendChild(c1);
@@ -537,12 +524,12 @@ function renderStock(){
     var c3=mk("td"),db=mk("b","");c3.appendChild(db);c3.appendChild(mk("div","sub","("+ppl+" نفر)"));tr.appendChild(c3);
     var c4=mk("td"),rm=mk("b","");c4.appendChild(rm);tr.appendChild(c4);
     function upd(){var s=it[1],d=Math.round(s*ppl*100)/100,r=Math.round(((parseFloat(inp.value)||0)-d)*100)/100;db.textContent=d;rm.textContent=r;rm.className=r<0?"no":"ok"}
-    inp.oninput=upd;upd();tb.appendChild(tr)})}
+    inp.oninput=upd;if(shi)shi.oninput=upd;upd();tb.appendChild(tr)})}
 $("sm").onchange=renderStock;
 $("stockb").onclick=openStock;
 $("ssave").onclick=function(){
   var m=+$("sm").value,o={},s=$("sms");
-  [].forEach.call($("stb").querySelectorAll("input"),function(i){var v=parseFloat(i.value);if(v>0)o[i.dataset.j]=v});
+  [].forEach.call($("stb").querySelectorAll("input"),function(i){var v=parseFloat(i.value);if(i.className==="sh"){(stock.sh=stock.sh||{})[i.dataset.j]=v>0?v:0}else if(v>0)o[i.dataset.j]=v});
   var prev=stock[m]||{};stock[m]=o;
   if(storeStock()){s.style.color="var(--acc)";s.textContent="تم حفظ الحصص المستلمة للمستودع.";var arr=newArrivals(prev,o);if(arr.length)sendNews(sec,m,arr,s)}else{s.style.color="var(--bad)";s.textContent="تعذر الحفظ في هذا المتصفح."}};
 var sec="ration",ICON={ration:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18l-2 11H5L3 9z"/><path d="M8 9l4-6 4 6"/></svg>',welfare:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'},LBL={ration:"الحصة التموينية",welfare:"الرعاية الاجتماعية"};
@@ -622,6 +609,7 @@ window.FBready.then(function(f){FB=f;f.onAuth(function(u){$("lg").hidden=!!u;if(
 $("lgo").onclick=async function(){
   try{await window.FBready;await FB.signIn($("le").value.trim(),$("lp").value);$("lm").textContent="";$("lp").value=""}
   catch(e){$("lm").textContent="البريد الإلكتروني أو كلمة المرور غير صحيحة."}};
+function seed(){var k=KEY+"-seeded-2026-10";try{if(localStorage.getItem(k))return;data=SEED.map(function(x){return Object.assign({},x)});if(store())localStorage.setItem(k,"1")}catch(e){if(!data.length)data=SEED.slice()}}
 $("slogo").src=document.querySelector("#home .logo img").src;view("start");
 })();
 </script>
