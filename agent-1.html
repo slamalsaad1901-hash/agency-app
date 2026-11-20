@@ -693,7 +693,8 @@ function digits(s){return nz(s).replace(/\D/g,"")}
 async function keyOf(sec,name,card){var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(sec+"|"+digits(card)+"|"+compact(name).slice(0,8)));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
 /*PURE1-END*/
 /*PURE2-START*/
-function docJson(f){var o={id:f.id,name:f.name,card:String(f.card),fam:f.fam,persons:f.persons||[]};if(f.nc)o.nc=f.nc;if(f.ent!=null)o.ent=f.ent;if(f.blk!=null)o.blk=f.blk;if(f.ys){var cy=f.ys[new Date().getFullYear()];if(cy)o.tj=JSON.stringify(cy);o.ty=JSON.stringify(f.ys)}return JSON.stringify(o)}
+function docJson(f){var o={id:f.id,name:f.name,card:String(f.card),fam:f.fam,persons:f.persons||[]};if(f.nc)o.nc=f.nc;if(f.ent!=null)o.ent=f.ent;if(f.blk!=null)o.blk=f.blk;if(f.ys){var cy=latestT(f.ys);if(cy)o.tj=JSON.stringify(cy);o.ty=JSON.stringify(f.ys)}return JSON.stringify(o)}
+function latestT(ys){var k=Object.keys(ys).sort().reverse();for(var i=0;i<k.length;i++){var t=ys[k[i]];if(Array.isArray(t)&&t.some(function(r){return r&&(r.slice(0,7).some(function(v){return v})||(r[7]!==null&&r[7]!==undefined))}))return t}return null}
 function computeOps(cur,sy,allowEmpty){var ops=[],n=Object.keys(cur).length;Object.keys(cur).forEach(function(k){if(sy[k]!==cur[k])ops.push(["set",k,cur[k]])});if(n>0||allowEmpty)Object.keys(sy).forEach(function(k){if(!(k in cur))ops.push(["del",k])});return ops}
 function newArrivals(prev,cur){var r=[];Object.keys(cur).forEach(function(j){if(cur[j]>0&&!(prev[j]>0))r.push(+j)});return r}
 function newsDoc(sec,m,item,ts){return{sec:sec,m:m,y:YEAR,it:item,text:"تم قدوم مادة ال"+item+" للشهر "+MN[m]+" "+YEAR,ts:ts}}
