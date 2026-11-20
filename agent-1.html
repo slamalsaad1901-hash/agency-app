@@ -320,17 +320,19 @@ function renderPersonsList(x){
   box.style.marginBottom = "12px";
   box.innerHTML = "<div style='font-weight:bold;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:4px'>أفراد العائلة (اضغط على الاسم لعرض الهوية):</div>";
   
-  if(x.persons && x.persons.length){
-    x.persons.forEach(function(p, idx){
-      var d = mk("div");
-      var lnk = mk("span","lk", (idx+1) + ". " + (p.name || "فرد بدون اسم"));
-      lnk.onclick = function(){ openPersonModal(p); };
-      d.appendChild(lnk);
-      d.appendChild(mk("span","",(p.front||p.back)?"تم رفع الهوية ✓":"بدون هوية"));
-      box.appendChild(d);
-    });
-    $("di").after(box);
+  if(!x.persons) x.persons = [];
+  var count = Math.max(x.fam, x.persons.length);
+  for(let i=0; i<count; i++){
+    var p = x.persons[i] || {name:"", front:"", back:""};
+    var d = mk("div");
+    var dispName = p.name ? p.name : ((i === 0) ? x.name : ("فرد " + (i + 1)));
+    var lnk = mk("span","lk", (i+1) + ". " + dispName);
+    lnk.onclick = (function(personObj){ return function(){ openPersonModal(personObj); }; })(p);
+    d.appendChild(lnk);
+    d.appendChild(mk("span","",(p.front||p.back)?"تم رفع الهوية ✓":"بدون هوية"));
+    box.appendChild(d);
   }
+  $("di").after(box);
 }
 
 function openPersonModal(p){
@@ -389,8 +391,9 @@ function buildIdsInputs(){
     var wrap = document.createElement("div");
     wrap.style.cssText = "background:#FFFFFF;border:1px solid var(--line);padding:10px;border-radius:8px;margin-bottom:10px;";
     
+    var defaultName = (i === 0 && !p.name) ? cur.name : (p.name || "");
     wrap.innerHTML = '<label>اسم الفرد '+(i+1)+'</label>' +
-                     '<input type="text" class="pname-in" value="'+(p.name||"")+'" placeholder="الاسم الكامل" style="margin-bottom:8px">' +
+                     '<input type="text" class="pname-in" value="'+defaultName+'" placeholder="الاسم الكامل" style="margin-bottom:8px">' +
                      '<div class="two">' +
                        '<div>' +
                          '<label style="font-size:13px">صورة الوجه</label>' +
@@ -407,8 +410,8 @@ function buildIdsInputs(){
     wrap.dataset.front = p.front || "";
     wrap.dataset.back = p.back || "";
     
-    wrap.querySelector(".cam-trig-f").onclick = function(){ openCamera(wrap, 'front'); };
-    wrap.querySelector(".cam-trig-b").onclick = function(){ openCamera(wrap, 'back'); };
+    wrap.querySelector(".cam-trig-f").onclick = (function(w){ return function(){ openCamera(w, 'front'); }; })(wrap);
+    wrap.querySelector(".cam-trig-b").onclick = (function(w){ return function(){ openCamera(w, 'back'); }; })(wrap);
   }
 }
 
@@ -546,9 +549,7 @@ $("saveIds").onclick = function(){
     var name = wrap.querySelector(".pname-in").value.trim();
     var front = wrap.dataset.front;
     var back = wrap.dataset.back;
-    if(name || front || back){
-      newPersons.push({name: name, front: front, back: back});
-    }
+    newPersons.push({name: name, front: front, back: back});
   });
   cur.persons = newPersons;
   if(store()){
@@ -561,7 +562,7 @@ $("tsave").onclick=function(){
   var t=[],sum=0;
   [].forEach.call($("tb").rows,function(tr){var q=tr.querySelectorAll("input"),r=[];var L=HD.length;for(var j=0;j<6;j++)r.push(j<L&&q[j].checked?1:0);var a=Math.max(0,parseFloat(q[L+1].value)||0),f=q[L].value===""?null:Math.max(0,parseInt(q[L].value,10)||0);r.push(a);r.push(f);sum+=a;t.push(r)});
   cur.t=t;var m=$("tm");
-  if(store()){var y=window.scrollY;show(cur.id,from);window.scrollTo(0,y);m=$("tm");m.style.color="var(--acc)";m.textContent="تم حفظ الجدول. مجموع المبالغ: "+sum}else{m.style.color="var(--bad)";m.textContent="تعذر الحفظ."}
+  if(store()){var y=window.scrollY;show(cur.id,from);window.scrollTo(0,y);m=$("tm");m.style.color="var(--acc)";m.textContent="تم حفظ جدول الحصص. مجموع المبالغ: "+sum}else{m.style.color="var(--bad)";m.textContent="تعذر الحفظ."}
 };
 $("back").onclick=function(){cur=null;if(from==="inv")openInv();else if(from==="debt")openDebt();else{view("home");render()}};
 function entOf(x){var v=x.ent;if(x.t)for(var i=11;i>=0;i--){var f=x.t[i]&&x.t[i][7];if(f!==undefined&&f!==null&&f!==""){v=f;break}}return v}
