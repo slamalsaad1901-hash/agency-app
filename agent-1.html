@@ -694,6 +694,7 @@ async function keyOf(sec,name,card){var b=await crypto.subtle.digest("SHA-256",n
 /*PURE1-END*/
 /*PURE2-START*/
 function docJson(f){var o={id:f.id,name:f.name,card:String(f.card),fam:f.fam,persons:f.persons||[]};if(f.nc)o.nc=f.nc;if(f.ent!=null)o.ent=f.ent;if(f.blk!=null)o.blk=f.blk;if(f.ys){var cy=latestT(f.ys);if(cy)o.tj=JSON.stringify(cy);o.ty=JSON.stringify(f.ys)}return JSON.stringify(o)}
+function rawJson(x){var o={id:x.id,name:x.name,card:String(x.card),fam:x.fam,persons:x.persons||[]};if(x.nc)o.nc=x.nc;if(x.ent!=null)o.ent=x.ent;if(x.blk!=null)o.blk=x.blk;if(x.tj)o.tj=x.tj;if(x.ty)o.ty=x.ty;return JSON.stringify(o)}
 function latestT(ys){var k=Object.keys(ys).sort().reverse();for(var i=0;i<k.length;i++){var t=ys[k[i]];if(Array.isArray(t)&&t.some(function(r){return r&&(r.slice(0,7).some(function(v){return v})||(r[7]!==null&&r[7]!==undefined))}))return t}return null}
 function computeOps(cur,sy,allowEmpty){var ops=[],n=Object.keys(cur).length;Object.keys(cur).forEach(function(k){if(sy[k]!==cur[k])ops.push(["set",k,cur[k]])});if(n>0||allowEmpty)Object.keys(sy).forEach(function(k){if(!(k in cur))ops.push(["del",k])});return ops}
 function newArrivals(prev,cur){var r=[];Object.keys(cur).forEach(function(j){if(cur[j]>0&&!(prev[j]>0))r.push(+j)});return r}
@@ -715,9 +716,9 @@ async function flush(){
     var keys=await Promise.all(D.map(function(f){return keyOf(s,f.name,f.card)})),cur={};
     D.forEach(function(f,i){cur[keys[i]]=docJson(f)});
     var sy=synced[s]||(synced[s]={}),ops=computeOps(cur,sy,wipeOK);
-    for(var i=0;i<ops.length;i+=400){
+    for(var i=0;i<ops.length;i+=50){
       var b=FB.writeBatch(FB.db);
-      ops.slice(i,i+400).forEach(function(o){var r=FB.doc(FB.db,s,o[1]);if(o[0]==="set")b.set(r,JSON.parse(o[2]));else b.delete(r)});
+      ops.slice(i,i+50).forEach(function(o){var r=FB.doc(FB.db,s,o[1]);if(o[0]==="set")b.set(r,JSON.parse(o[2]));else b.delete(r)});
       await b.commit()}
     ops.forEach(function(o){if(o[0]==="set")sy[o[1]]=o[2];else delete sy[o[1]]});
     var sj=JSON.stringify(ST);
@@ -727,11 +728,11 @@ async function flush(){
 async function pull(s){
   if(!FB||!FB.auth.currentUser){setSync(false,"غير مسجّل الدخول ⚠");return}
   try{
-    var q=await FB.getDocs(FB.collection(FB.db,s)),arr=[],sy={};
+    var q=await FB.getDocs(FB.collection(FB.db,s)),arr=[],sy={},need=false;
     q.forEach(function(d){var x=d.data(),o={id:x.id,name:x.name,card:x.card,fam:x.fam,persons:x.persons||[]};
       if(x.nc)o.nc=x.nc;if(x.ent!=null)o.ent=x.ent;if(x.blk!=null)o.blk=x.blk;
       if(x.ty){try{o.ys=JSON.parse(x.ty)}catch(e){}}else if(x.tj){try{o.ys={};o.ys[LEG]=JSON.parse(x.tj)}catch(e){}}
-      arr.push(o);sy[d.id]=docJson(o)});
+      arr.push(o);sy[d.id]=rawJson(x);if(rawJson(x)!==docJson(o))need=true});
     var sd=await FB.getDoc(FB.doc(FB.db,"meta","stock_"+s)),sj=sd.exists()&&sd.data().sj?sd.data().sj:"{}";
     if(s!==sec)return;
     synced[s]=sy;stSynced[s]=sj;
@@ -740,7 +741,7 @@ async function pull(s){
       arr.sort(function(a,b){return a.name.localeCompare(b.name,"ar")});
       data=arr;stock=JSON.parse(sj);
       try{localStorage.setItem(KEY,JSON.stringify(data));localStorage.setItem(KEY+"-stock",JSON.stringify(stock))}catch(e){}
-      setSync(true);
+      setSync(true);if(need)push();
       if(!$("home").hidden)render();else if(!$("inv").hidden)renderInv();else if(!$("debt").hidden)renderDebt()}
     else if(data.length){push()}
     else setSync(true)
