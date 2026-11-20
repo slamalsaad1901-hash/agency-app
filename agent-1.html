@@ -104,7 +104,6 @@ body{padding-bottom:84px}
 :root[data-theme="dark"] .logo img{filter:invert(1) hue-rotate(180deg)}
 input[type=number]{-moz-appearance:textfield;appearance:textfield}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-/* theme from the agency logo: amber orange, near-black, warm gold-brown */
 :root{--bg:#FBF3E2;--card:#FFFFFF;--ink:#1B1610;--mute:#7C6A50;--line:#E9D9B8;--acc:#A5560A;--btn:#F5A524;--btnfg:#1B1610;--thbg:#FFEFCB;--bad:#B93A2B}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15110C;--card:#211A12;--ink:#F6EEDD;--mute:#BBA784;--line:#3B3023;--acc:#F7B64D;--btn:#F5A524;--btnfg:#1B1610;--thbg:#2E2415;--bad:#F08B80}}
 :root[data-theme="dark"]{--bg:#15110C;--card:#211A12;--ink:#F6EEDD;--mute:#BBA784;--line:#3B3023;--acc:#F7B64D;--btn:#F5A524;--btnfg:#1B1610;--thbg:#2E2415;--bad:#F08B80}
@@ -123,7 +122,6 @@ body.nonav{padding-bottom:0}
 :root[data-sec="welfare"]{--bg:#EDF3FB;--card:#FFFFFF;--ink:#0F1B2D;--mute:#58698A;--line:#D1DDEF;--acc:#1A5AB8;--btn:#2F7BE5;--btnfg:#FFFFFF;--thbg:#DCE8FA}
 @media (prefers-color-scheme:dark){:root[data-sec="welfare"]:not([data-theme="light"]){--bg:#0D1520;--card:#152134;--ink:#E8F0FB;--mute:#9DB1CE;--line:#26374F;--acc:#7DB2F5;--btn:#3B82E6;--btnfg:#FFFFFF;--thbg:#1B2A42}}
 :root[data-sec="welfare"][data-theme="dark"]{--bg:#0D1520;--card:#152134;--ink:#E8F0FB;--mute:#9DB1CE;--line:#26374F;--acc:#7DB2F5;--btn:#3B82E6;--btnfg:#FFFFFF;--thbg:#1B2A42}
-/* white background, top back bar, welfare table widths */
 :root{--bg:#FFFFFF}
 :root[data-sec="welfare"]{--bg:#FFFFFF}
 body{padding-top:52px}body.nonav{padding-top:0;padding-bottom:0}
@@ -186,8 +184,34 @@ th.ind{width:13%}
 <button id="back" type="button">رجوع إلى القائمة</button>
 <h1 id="dn"></h1>
 <div class="info" id="di"></div>
-<div class="acts" style="margin:0 0 10px"><button id="eb" type="button">تعديل البيانات</button><button id="db" class="bad" type="button">حذف المواطن</button></div>
+<div class="acts" style="margin:0 0 10px"><button id="eb" type="button">تعديل البيانات</button><button id="idbs" class="main" type="button">إدارة هويات الأفراد (وجه وظهر)</button><button id="db" class="bad" type="button">حذف المواطن</button></div>
 <div class="ef" id="ef" hidden><label for="en">الاسم</label><input id="en"><div class="two"><div><label for="ec">رقم البطاقة</label><input id="ec" inputmode="numeric"></div><div><label for="ek">عدد الأفراد</label><input id="ek" type="number" min="1" inputmode="numeric"></div></div><div class="acts"><button class="main" id="es" type="button">حفظ التعديل</button><button id="ex" type="button">إلغاء</button></div><div id="em" style="color:var(--bad);margin-top:6px"></div></div>
+
+<!-- قسم إداراة الهويات -->
+<div id="idssec" class="ef" hidden>
+  <h3>إدارة هويات أفراد العائلة</h3>
+  <p style="color:var(--mute);font-size:14px">أدخل أسماء الأفراد وارفض صور الهوية (الوجه والظهر) لكل فرد:</p>
+  <div id="idsList"></div>
+  <button class="main" id="saveIds" type="button" style="margin-top:10px;width:100%">حفظ الهويات</button>
+  <button id="closeIds" type="button" style="margin-top:6px;width:100%">إغلاق قسم الهويات</button>
+</div>
+
+<!-- نافذة عرض بيانات الفرد وصور الهوية -->
+<div id="personModal" class="lg" hidden style="background:rgba(0,0,0,0.6)">
+  <div class="lgb" style="background:var(--card);padding:20px;border-radius:12px;max-height:90vh;overflow-y:auto">
+    <h2 id="pmName" style="margin-top:0;color:var(--acc)"></h2>
+    <div style="margin:10px 0">
+      <p style="font-weight:bold;margin:4px 0">صورة الوجه:</p>
+      <div id="pmFront" style="text-align:center;background:var(--bg);border:1px dashed var(--line);padding:10px;border-radius:8px;min-height:80px">لا توجد صورة</div>
+    </div>
+    <div style="margin:10px 0">
+      <p style="font-weight:bold;margin:4px 0">صورة الظهر:</p>
+      <div id="pmBack" style="text-align:center;background:var(--bg);border:1px dashed var(--line);padding:10px;border-radius:8px;min-height:80px">لا توجد صورة</div>
+    </div>
+    <button id="closePm" class="main" type="button" style="width:100%;margin-top:14px">إغلاق</button>
+  </div>
+</div>
+
 <h2>جدول الحصص الشهرية</h2>
 <div class="tw"><table><thead><tr id="thr"></tr></thead><tbody id="tb"></tbody></table></div>
 <div class="acts"><button class="main" id="tsave" type="button">حفظ جدول الحصص الشهرية</button></div>
@@ -263,7 +287,7 @@ $("f").onsubmit=function(ev){
   var dup=data.some(function(x){return x.card===card&&x.id!==editing});
   if(dup){$("msg").textContent="رقم البطاقة هذا مسجل مسبقًا.";return}
   if(editing){data=data.map(function(x){return x.id===editing?Object.assign({},x,{name:name,card:card,fam:fam}):x})}
-  else{data.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:name,card:card,fam:fam})}
+  else{data.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:name,card:card,fam:fam,persons:[]})}
   if(store()){reset();$("f").hidden=true;$("q").value=name;render()}
 };
 $("cancel").onclick=function(){reset();$("f").hidden=true};
@@ -273,21 +297,24 @@ $("qx").onclick=function(){$("q").value="";render();$("q").focus()};
 $("exp").onclick=function(){$("bk").value=JSON.stringify({c:data,s:stock})};
 $("cp").onclick=function(){var t=$("bk");if(!t.value)t.value=JSON.stringify({c:data,s:stock});t.select();try{navigator.clipboard.writeText(t.value)}catch(e){try{document.execCommand("copy")}catch(e2){}}};
 $("imp").onclick=function(){
-  try{var a=JSON.parse($("bk").value);if(a&&!Array.isArray(a)){stock=a.s||{};a=a.c;storeStock()}
+  try{var a=JSON.parse($("bk").value);if(a&&!Array.isArray(a)){stock=a.s||{};a=a.c}
     if(!Array.isArray(a)||!a.every(function(x){return x&&x.name&&x.card&&x.fam>=0}))throw 0;
-    data=a.map(function(x){return Object.assign({},x,{id:x.id||Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:String(x.name),card:String(x.card),fam:parseInt(x.fam,10)})});
+    data=a.map(function(x){return Object.assign({},x,{id:x.id||Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:String(x.name),card:String(x.card),fam:parseInt(x.fam,10),persons:x.persons||[]})});
     store();render();$("bk").value=""
   }catch(e){$("bk").value="";$("bk").placeholder="النص غير صالح. الصق النسخة الاحتياطية كاملة."}
 };
 var MN=["الأول","الثاني","الثالث","الرابع","الخامس","السادس","السابع","الثامن","التاسع","العاشر","الحادي عشر","الثاني عشر"],HD=["طحين","زيت","سكر","معجون","رز","بقوليات"],HDR=HD,HDW=["حليب","طحين","سكر","شاي","زيت"],cur=null;
 function mk(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
-function show(id,f){from=f||"home";$("ef").hidden=true;$("db").dataset.s="";$("db").textContent="حذف المواطن";
+function show(id,f){from=f||"home";$("ef").hidden=true;$("idssec").hidden=true;$("db").dataset.s="";$("db").textContent="حذف المواطن";
   var x=data.filter(function(y){return y.id===id})[0];if(!x)return;cur=x;
   view("det");$("dn").textContent=x.name;$("tm").textContent="";
   var di=$("di");di.innerHTML="";
   [["رقم البطاقة",x.card],["البطاقة الجديدة",x.nc],["عدد الأفراد",x.fam],["المستحقون",entOf(x)],["المحجوبون",blkOf(x)],["إجمالي الدين",debtOf(x)?fmt(debtOf(x))+" د.ع":""]].forEach(function(r){
     if(r[1]===undefined||r[1]===null||r[1]==="")return;
     var d=mk("div");d.appendChild(mk("span","",r[0]));d.appendChild(mk("b","num",r[1]));di.appendChild(d)});
+  
+  renderPersonsList(x);
+
   var tb=$("tb");tb.innerHTML="";var thr=$("thr");thr.innerHTML="";["الشهر"].concat(HD).concat(["الأفراد","المبلغ"]).forEach(function(t,i,a){var th=mk("th","",t);if(i===a.length-2)th.className="ind";thr.appendChild(th)});
   MN.forEach(function(m,i){
     var row=(x.t&&x.t[i])||[],tr=mk("tr");tr.appendChild(mk("td","",m));
@@ -295,6 +322,130 @@ function show(id,f){from=f||"home";$("ef").hidden=true;$("db").dataset.s="";$("d
     var tf=mk("td"),f=document.createElement("input");f.type="number";f.min=0;f.inputMode="numeric";f.value=(row[7]===undefined||row[7]===null)?"":row[7];f.setAttribute("aria-label","الأفراد "+m);tf.appendChild(f);tr.appendChild(tf);
     var ta=mk("td"),n=document.createElement("input");n.type="number";n.min=0;n.inputMode="numeric";n.value=row[6]||"";n.setAttribute("aria-label","المبلغ "+m);ta.appendChild(n);tr.appendChild(ta);tb.appendChild(tr)});
   window.scrollTo(0,0)}
+
+function renderPersonsList(x){
+  var existing = document.getElementById("familyPersonsSummary");
+  if(existing) existing.remove();
+  
+  var box = mk("div","info");
+  box.id = "familyPersonsSummary";
+  box.style.marginBottom = "12px";
+  box.innerHTML = "<div style='font-weight:bold;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:4px'>أفراد العائلة (اضغط على الاسم لعرض الهوية):</div>";
+  
+  if(!x.persons || !x.persons.length){
+    box.appendChild(mk("div","","لم يتم إدخال أسماء أو هويات الأفراد بعد. اضغط على زر 'إدارة هويات الأفراد' لإضافتهم."));
+  } else {
+    x.persons.forEach(function(p, idx){
+      var d = mk("div");
+      var lnk = mk("span","lk", (idx+1) + ". " + (p.name || "فرد بدون اسم"));
+      lnk.onclick = function(){ openPersonModal(p); };
+      d.appendChild(lnk);
+      d.appendChild(mk("span","",(p.front||p.back)?"تم رفع الهوية ✓":"بدون هوية"));
+      box.appendChild(d);
+    });
+  }
+  $("di").after(box);
+}
+
+function openPersonModal(p){
+  $("pmName").textContent = p.name || "فرد بدون اسم";
+  var fDiv = $("pmFront"), bDiv = $("pmBack");
+  fDiv.innerHTML = ""; bDiv.innerHTML = "";
+  if(p.front){
+    var imgF = document.createElement("img"); imgF.src = p.front; imgF.style.maxHeight = "200px"; imgF.style.maxWidth = "100%"; imgF.style.borderRadius = "6px";
+    fDiv.appendChild(imgF);
+  } else {
+    fDiv.textContent = "لا توجد صورة وجه مسجلة";
+  }
+  if(p.back){
+    var imgB = document.createElement("img"); imgB.src = p.back; imgB.style.maxHeight = "200px"; imgB.style.maxWidth = "100%"; imgB.style.borderRadius = "6px";
+    bDiv.appendChild(imgB);
+  } else {
+    bDiv.textContent = "لا توجد صورة ظهر مسجلة";
+  }
+  $("personModal").hidden = false;
+}
+
+$("closePm").onclick = function(){ $("personModal").hidden = true; };
+
+$("idbs").onclick = function(){
+  var sec = $("idssec");
+  sec.hidden = !sec.hidden;
+  if(!sec.hidden) buildIdsInputs();
+};
+$("closeIds").onclick = function(){ $("idssec").hidden = true; };
+
+function buildIdsInputs(){
+  var c = $("idsList"); c.innerHTML = "";
+  if(!cur.persons) cur.persons = [];
+  var count = Math.max(cur.fam, cur.persons.length);
+  for(let i=0; i<count; i++){
+    var p = cur.persons[i] || {name:"", front:"", back:""};
+    var wrap = document.createElement("div");
+    wrap.style.cssText = "background:var(--bg);border:1px solid var(--line);padding:8px;border-radius:8px;margin-bottom:8px;";
+    
+    wrap.innerHTML = '<label>اسم الفرد '+(i+1)+'</label>' +
+                     '<input type="text" class="pname-in" value="'+(p.name||"")+'" placeholder="الاسم الكامل">' +
+                     '<div class="two" style="margin-top:6px">' +
+                       '<div><label style="font-size:13px">صورة الوجه</label><input type="file" accept="image/*" class="pfront-in"></div>' +
+                       '<div><label style="font-size:13px">صورة الظهر</label><input type="file" accept="image/*" class="pback-in"></div>' +
+                     '</div>' +
+                     '<div class="pstatus" style="font-size:12px;color:var(--acc);margin-top:4px">'+(p.front||p.back?'مرفوع مسبقاً ✓':'')+'</div>';
+    c.appendChild(wrap);
+    
+    wrap.dataset.front = p.front || "";
+    wrap.dataset.back = p.back || "";
+    
+    var fIn = wrap.querySelector(".pfront-in");
+    fIn.onchange = function(e){
+      compressImage(e.target.files[0], function(base64){ wrap.dataset.front = base64; wrap.querySelector(".pstatus").textContent="تم تحديث الوجه ✓"; });
+    };
+    var bIn = wrap.querySelector(".pback-in");
+    bIn.onchange = function(e){
+      compressImage(e.target.files[0], function(base64){ wrap.dataset.back = base64; wrap.querySelector(".pstatus").textContent="تم تحديث الظهر ✓"; });
+    };
+  }
+}
+
+function compressImage(file, callback){
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var canvas = document.createElement('canvas');
+      var MAX_WIDTH = 800, MAX_HEIGHT = 800;
+      var width = img.width, height = img.height;
+      if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } }
+      else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
+      canvas.width = width; canvas.height = height;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      callback(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+$("saveIds").onclick = function(){
+  var items = $("idsList").children;
+  var newPersons = [];
+  [].forEach.call(items, function(wrap){
+    var name = wrap.querySelector(".pname-in").value.trim();
+    var front = wrap.dataset.front;
+    var back = wrap.dataset.back;
+    if(name || front || back){
+      newPersons.push({name: name, front: front, back: back});
+    }
+  });
+  cur.persons = newPersons;
+  if(store()){
+    $("idssec").hidden = true;
+    show(cur.id, from);
+  }
+};
+
 $("tsave").onclick=function(){
   var t=[],sum=0;
   [].forEach.call($("tb").rows,function(tr){var q=tr.querySelectorAll("input"),r=[];var L=HD.length;for(var j=0;j<6;j++)r.push(j<L&&q[j].checked?1:0);var a=Math.max(0,parseFloat(q[L+1].value)||0),f=q[L].value===""?null:Math.max(0,parseInt(q[L].value,10)||0);r.push(a);r.push(f);sum+=a;t.push(r)});
@@ -351,7 +502,8 @@ function renderDebt(){
     var x=r.x,d=mk("div","li"),top=mk("div","dt"),nm=mk("div","lk",x.name);nm.onclick=function(){show(x.id,"debt")};
     top.appendChild(nm);top.appendChild(mk("b","",fmt(r.t)+" د.ع"));d.appendChild(top);
     var det=[];x.t.forEach(function(row,i){if(row&&row[6]>0)det.push(MN[i]+": "+fmt(row[6]))});
-    d.appendChild(mk("p","","البطاقة: "+x.card+" | "+det.join("، ")));L.appendChild(d)})}
+    d.appendChild(mk("p","","البطاقة: "+x.card+" | "+det.join("، ")))
+    L.appendChild(d)})}
 $("debtb").onclick=openDebt;
 var stock={},IT=[["طحين",9,"كغم"],["رز",3,"كغم"],["سكر",1,"كغم"],["بقوليات",1,"كغم"],["زيت",1,"علبة"],["معجون",1,"علبة"]];
 function loadStock(){try{var r=localStorage.getItem(KEY+"-stock");stock=r?JSON.parse(r):{}}catch(e){stock={}}if(!stock||typeof stock!=="object")stock={}}
@@ -402,7 +554,7 @@ function digits(s){return nz(s).replace(/\D/g,"")}
 async function keyOf(sec,name,card){var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(sec+"|"+digits(card)+"|"+compact(name).slice(0,8)));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")}
 /*PURE1-END*/
 /*PURE2-START*/
-function docJson(f){var o={id:f.id,name:f.name,card:String(f.card),fam:f.fam};if(f.nc)o.nc=f.nc;if(f.ent!=null)o.ent=f.ent;if(f.blk!=null)o.blk=f.blk;if(f.t)o.tj=JSON.stringify(f.t);return JSON.stringify(o)}
+function docJson(f){var o={id:f.id,name:f.name,card:String(f.card),fam:f.fam,persons:f.persons||[]};if(f.nc)o.nc=f.nc;if(f.ent!=null)o.ent=f.ent;if(f.blk!=null)o.blk=f.blk;if(f.t)o.tj=JSON.stringify(f.t);return JSON.stringify(o)}
 function computeOps(cur,sy,allowEmpty){var ops=[],n=Object.keys(cur).length;Object.keys(cur).forEach(function(k){if(sy[k]!==cur[k])ops.push(["set",k,cur[k]])});if(n>0||allowEmpty)Object.keys(sy).forEach(function(k){if(!(k in cur))ops.push(["del",k])});return ops}
 function newArrivals(prev,cur){var r=[];Object.keys(cur).forEach(function(j){if(cur[j]>0&&!(prev[j]>0))r.push(+j)});return r}
 function newsDoc(sec,m,item,ts){return{sec:sec,m:m,it:item,text:"تم قدوم مادة ال"+item+" للشهر "+MN[m],ts:ts}}
@@ -436,7 +588,7 @@ async function pull(s){
   if(!FB||!FB.auth.currentUser){setSync(false,"غير مسجّل الدخول ⚠");return}
   try{
     var q=await FB.getDocs(FB.collection(FB.db,s)),arr=[],sy={};
-    q.forEach(function(d){var x=d.data(),o={id:x.id,name:x.name,card:x.card,fam:x.fam};
+    q.forEach(function(d){var x=d.data(),o={id:x.id,name:x.name,card:x.card,fam:x.fam,persons:x.persons||[]};
       if(x.nc)o.nc=x.nc;if(x.ent!=null)o.ent=x.ent;if(x.blk!=null)o.blk=x.blk;
       if(x.tj){try{o.t=JSON.parse(x.tj)}catch(e){}}
       arr.push(o);sy[d.id]=docJson(o)});
