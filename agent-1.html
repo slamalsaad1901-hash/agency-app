@@ -410,8 +410,11 @@ function buildIdsInputs(){
     wrap.dataset.front = p.front || "";
     wrap.dataset.back = p.back || "";
     
-    wrap.querySelector(".cam-trig-f").onclick = (function(w){ return function(){ openCamera(w, 'front'); }; })(wrap);
-    wrap.querySelector(".cam-trig-b").onclick = (function(w){ return function(){ openCamera(w, 'back'); }; })(wrap);
+    // ربط دقيق لكل كارت فرد على حدة لتجنب التداخل
+    (function(w, personIndex){
+      w.querySelector(".cam-trig-f").onclick = function(){ openCamera(w, 'front'); };
+      w.querySelector(".cam-trig-b").onclick = function(){ openCamera(w, 'back'); };
+    })(wrap, i);
   }
 }
 
