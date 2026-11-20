@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>إدارة الوكالة</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <style>
 :root{--bg:#FFFFFF;--card:#F8F9FA;--ink:#1B1610;--mute:#7C6A50;--line:#E2E8F0;--acc:#2F7BE5;--btn:#2F7BE5;--btnfg:#FFFFFF;--thbg:#EBF3FF;--bad:#B93A2B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
@@ -510,6 +511,37 @@ function closeCameraStream(){
   }
 }
 
+/* ===== قراءة الاسم الثلاثي من البطاقة (OCR) ===== */
+var ocrWorker=null;
+function arOnly(s){return s.replace(/[^\u0600-\u06FF\s]/g,"").replace(/\s+/g," ").trim()}
+function parseIdName(txt){
+  var L=txt.split(/\n/).map(function(s){return s.trim()}).filter(Boolean);
+  var R={own:"",ab:"",jd:""};
+  var reJ=/[اأإآ]سم\s*ال[جح]د/, reA=/[اأإآ]سم\s*ال[اأإآ]ب/, reO=/ال[اأإآ]سم/;
+  L.forEach(function(line,i){
+    var key=null,re=null;
+    if(reJ.test(line)){key="jd";re=reJ}
+    else if(reA.test(line)){key="ab";re=reA}
+    else if(reO.test(line)&&!R.own){key="own";re=reO}
+    if(!key||R[key])return;
+    var v=arOnly(line.split(re).slice(1).join(" "));
+    if(!v&&L[i+1])v=arOnly(L[i+1]);
+    R[key]=v});
+  return R.own?[R.own,R.ab,R.jd].filter(Boolean).join(" "):"";
+}
+async function readNameFromCard(dataUrl,wrap){
+  var st=wrap.querySelector(".pstatus"),inp=wrap.querySelector(".pname-in");
+  try{
+    if(!window.Tesseract)throw 0;
+    st.textContent="جارٍ قراءة الاسم من البطاقة...";
+    if(!ocrWorker)ocrWorker=await Tesseract.createWorker("ara");
+    var r=await ocrWorker.recognize(dataUrl);
+    var nm=parseIdName(r.data.text||"");
+    if(nm){inp.value=nm;st.textContent="تم التقاط الوجه وقراءة الاسم ✓ (راجع الاسم وصحّحه إن لزم)"}
+    else st.textContent="تم التقاط الوجه، لكن تعذرت قراءة الاسم. اكتبه يدوياً أو أعد الالتقاط."
+  }catch(e){st.textContent="تم التقاط الوجه، تعذرت قراءة الاسم (تحتاج إنترنت أول مرة)."}
+}
+
 function captureIdentityAutomatically(){
   if(!activeCamTarget)return;
   var video=$("camVideo");
@@ -530,6 +562,7 @@ function captureIdentityAutomatically(){
   if(targetType==="front"){
     targetWrap.dataset.front=dataUrl;
     targetWrap.querySelector(".pstatus").textContent="تم التقاط وجه الهوية تلقائياً ✓";
+    readNameFromCard(dataUrl,targetWrap);
   }else{
     targetWrap.dataset.back=dataUrl;
     targetWrap.querySelector(".pstatus").textContent="تم التقاط ظهر الهوية تلقائياً ✓";
