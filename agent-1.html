@@ -173,8 +173,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <!-- واجهة الكاميرا المباشرة -->
 <div id="camModal" class="lg" hidden style="background:rgba(0,0,0,0.85);flex-direction:column;z-index:100">
   <div style="position:relative;width:100%;max-width:400px;background:#000;border-radius:12px;overflow:hidden;text-align:center">
-    <video id="camVideo" autoplay playsinline style="width:100%;height:300px;object-fit:cover;display:block"></video>
-    <div style="position:absolute;width:84%;height:64%;top:18%;left:8%;box-sizing:border-box;border:3px solid #22c55e;border-radius:10px;pointer-events:none;box-shadow:0 0 0 1000px rgba(0,0,0,0.4)"></div>
+    <div id="camView" style="position:relative;width:100%;aspect-ratio:4/3;background:#000;overflow:hidden">
+      <video id="camVideo" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;display:block"></video>
+      <div id="idGuide" style="position:absolute;width:86%;aspect-ratio:1.586; height:auto;top:50%;left:7%;transform:translateY(-50%);box-sizing:border-box;border:3px solid #22c55e;border-radius:7px;pointer-events:none;box-shadow:0 0 0 1000px rgba(0,0,0,0.4)"></div>
+    </div>
     <div style="padding:12px;background:var(--card)">
       <p id="camStatus" role="status" style="display:none"> </p>
       <button id="captureBtn" class="main" type="button" style="width:100%">التقاط الآن يدوياً</button>
@@ -419,7 +421,7 @@ function openCamera(wrap, type){
     function ready(){
       if(started || !video.videoWidth || !video.videoHeight)return;
       started=true;
-      cameraStatus("حرّك الهوية قليلاً داخل الإطار، ثم ثبّتها لالتقاطها تلقائياً.");
+      cameraStatus("");
       beginStabilityDetection();
     }
     video.onloadedmetadata=ready;
@@ -430,46 +432,54 @@ function openCamera(wrap, type){
   });
 }
 
+function getGuideCrop(video, guide, outW, outH){
+  var vw=video.videoWidth, vh=video.videoHeight;
+  var vr=video.getBoundingClientRect(), gr=guide.getBoundingClientRect();
+  if(!vw||!vh||!vr.width||!vr.height)return null;
+  // Map the visible green frame back to the source video, accounting for object-fit: cover.
+  var scale=Math.max(vr.width/vw,vr.height/vh);
+  var shownW=vw*scale, shownH=vh*scale;
+  var offX=(shownW-vr.width)/2, offY=(shownH-vr.height)/2;
+  var sx=(gr.left-vr.left+offX)/scale;
+  var sy=(gr.top-vr.top+offY)/scale;
+  var sw=gr.width/scale, sh=gr.height/scale;
+  sx=Math.max(0,Math.min(vw-1,sx)); sy=Math.max(0,Math.min(vh-1,sy));
+  sw=Math.max(1,Math.min(vw-sx,sw)); sh=Math.max(1,Math.min(vh-sy,sh));
+  return {sx:sx,sy:sy,sw:sw,sh:sh};
+}
+
 function beginStabilityDetection(){
   stopStabilityDetection();
-  var video=$("camVideo");
+  var video=$("camVideo"), guide=$("idGuide");
   var sampleCanvas=document.createElement("canvas");
-  sampleCanvas.width=64;sampleCanvas.height=64;
+  sampleCanvas.width=96; sampleCanvas.height=60;
   var sampleCtx=sampleCanvas.getContext("2d",{willReadFrequently:true});
   stabilityTimer=setInterval(function(){
     if(!activeCamTarget || !videoStream || video.readyState<2 || cameraBusy)return;
     try{
-      sampleCtx.drawImage(video,0,0,64,64);
-      var pixels=sampleCtx.getImageData(0,0,64,64).data;
-      var current=new Uint8Array(64*64);
+      var crop=getGuideCrop(video,guide,96,60); if(!crop)return;
+      sampleCtx.drawImage(video,crop.sx,crop.sy,crop.sw,crop.sh,0,0,96,60);
+      var pixels=sampleCtx.getImageData(0,0,96,60).data;
+      var current=new Uint8Array(96*60);
       for(var i=0,j=0;i<pixels.length;i+=4,j++)current[j]=(pixels[i]*3+pixels[i+1]*6+pixels[i+2])/10;
+      var mean=0; for(var m=0;m<current.length;m++)mean+=current[m]; mean/=current.length;
+      var variance=0; for(var n=0;n<current.length;n++){var delta=current[n]-mean;variance+=delta*delta;} variance/=current.length;
       if(previousFrame){
         var diff=0;
         for(var k=0;k<current.length;k++)diff+=Math.abs(current[k]-previousFrame[k]);
         diff/=current.length;
-        if(diff>9){
-          motionSeen=true;stableSamples=0;
-          cameraStatus("تم رصد حركة؛ ثبّت الهوية داخل الإطار...");
-        }else if(motionSeen && diff<5.5){
+        if(diff<7 && variance>18){
           stableSamples++;
-          cameraStatus("الصورة ثابتة... "+Math.min(stableSamples,6)+"/6");
-          if(stableSamples>=6){
+          if(stableSamples>=5){
             cameraBusy=true;
-            cameraStatus("جاري التقاط الهوية...");
             captureIdentity();
           }
-        }else if(motionSeen){
-          stableSamples=0;
-          cameraStatus("ثبّت الهوية داخل الإطار الأخضر...");
-        }
+        }else stableSamples=0;
       }
       previousFrame=current;
-    }catch(e){
-      cameraStatus("تعذّر فحص ثبات الصورة؛ يمكنك استخدام الالتقاط اليدوي.");
-    }
-  },250);
+    }catch(e){ /* يبقى الالتقاط اليدوي متاحاً */ }
+  },300);
 }
-
 $("closeCam").onclick = function(){
   closeCameraStream();
   $("camModal").hidden = true;
@@ -494,10 +504,12 @@ function captureIdentity(){
     cameraBusy=false;return;
   }
   var canvas=$("camCanvas");
-  canvas.width=video.videoWidth;
-  canvas.height=video.videoHeight;
+  var crop=getGuideCrop(video,$("idGuide"));
+  if(!crop){cameraBusy=false;cameraStatus("تعذر تحديد إطار الهوية، حاول مرة ثانية.");return;}
+  // Keep the captured image in the same landscape proportions as the national ID.
+  canvas.width=1200; canvas.height=757;
   var ctx=canvas.getContext("2d");
-  ctx.drawImage(video,0,0,canvas.width,canvas.height);
+  ctx.drawImage(video,crop.sx,crop.sy,crop.sw,crop.sh,0,0,canvas.width,canvas.height);
   var dataUrl=canvas.toDataURL("image/jpeg",0.82);
   if(activeCamTarget.type==="front"){
     activeCamTarget.wrap.dataset.front=dataUrl;
