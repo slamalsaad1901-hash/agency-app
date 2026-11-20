@@ -102,8 +102,6 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 #start{display:flex;flex-direction:column;min-height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 .big{display:flex;align-items:center;gap:14px;width:100%;padding:18px 16px;border:0;border-radius:16px;font-size:20px;font-weight:700;margin-bottom:12px;text-align:right}
 .big.r{background:#F5A524;color:#1B1610}.big.w{background:#2F7BE5;color:#fff}
-:root[data-sec="welfare"]{--bg:#EDF3FB;--card:#FFFFFF;--ink:#0F1B2D;--mute:#58698A;--line:#D1DDEF;--acc:#1A5AB8;--btn:#2F7BE5;--btnfg:#FFFFFF;--thbg:#DCE8FA}
-@media (prefers-color-scheme:dark){:root[data-sec="welfare"]:not([data-theme="light"]){--bg:#0D1520;--card:#152134;--ink:#E8F0FB;--mute:#9DB1CE;--line:#26374F;--acc:#7DB2F5;--btn:#3B82E6;--btnfg:#FFFFFF;--thbg:#1B2A42}}
 .lg{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}.lgb{width:100%;max-width:360px}
 </style>
 </head>
@@ -158,35 +156,33 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <button id="back" type="button">رجوع إلى القائمة</button>
 <h1 id="dn"></h1>
 <div class="info" id="di"></div>
-<div class="acts" style="margin:0 0 10px"><button id="eb" type="button">تعديل البيانات</button><button id="idbs" class="main" type="button">إدارة هويات الأفراد (كاميرا ذكية)</button><button id="db" class="bad" type="button">حذف المواطن</button></div>
+<div class="acts" style="margin:0 0 10px"><button id="eb" type="button">تعديل البيانات</button><button id="idbs" class="main" type="button">إدارة هويات الأفراد</button><button id="db" class="bad" type="button">حذف المواطن</button></div>
 <div class="ef" id="ef" hidden><label for="en">الاسم</label><input id="en"><div class="two"><div><label for="ec">رقم البطاقة</label><input id="ec" inputmode="numeric"></div><div><label for="ek">عدد الأفراد</label><input id="ek" type="number" min="1" inputmode="numeric"></div></div><div class="acts"><button class="main" id="es" type="button">حفظ التعديل</button><button id="ex" type="button">إلغاء</button></div><div id="em" style="color:var(--bad);margin-top:6px"></div></div>
 
-<!-- قسم إداراة الهويات -->
+<!-- قسم إداراة الهويات مع زر تعديل الصور -->
 <div id="idssec" class="ef" hidden>
   <h3>إدارة هويات أفراد العائلة</h3>
-  <p style="color:var(--mute);font-size:14px">اضغط على زر الكاميرا لالتقاط صورة الهوية تلقائياً داخل الإطار المخصص:</p>
+  <p style="color:var(--mute);font-size:14px">اضغط على كاميرا الوجه أو الظهر لتفعيل الالتقاط التلقائي الدقيق للفرد المحدد:</p>
   <div id="idsList"></div>
   <button class="main" id="saveIds" type="button" style="margin-top:10px;width:100%">حفظ الهويات</button>
   <button id="closeIds" type="button" style="margin-top:6px;width:100%">إغلاق قسم الهويات</button>
 </div>
 
-<!-- واجهة الكاميرا المباشرة -->
+<!-- واجهة الكاميرا الذكية (بدون رسائل حالة وبدون زر التقاط يدوي) -->
 <div id="camModal" class="lg" hidden style="background:rgba(0,0,0,0.85);flex-direction:column;z-index:100">
   <div style="position:relative;width:100%;max-width:400px;background:#000;border-radius:12px;overflow:hidden;text-align:center">
     <div id="camView" style="position:relative;width:100%;aspect-ratio:4/3;background:#000;overflow:hidden">
       <video id="camVideo" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;display:block"></video>
-      <div id="idGuide" style="position:absolute;width:86%;aspect-ratio:1.586; height:auto;top:50%;left:7%;transform:translateY(-50%);box-sizing:border-box;border:3px solid #22c55e;border-radius:7px;pointer-events:none;box-shadow:0 0 0 1000px rgba(0,0,0,0.4)"></div>
+      <div id="idGuide" style="position:absolute;width:86%;aspect-ratio:1.586;height:auto;top:50%;left:7%;transform:translateY(-50%);box-sizing:border-box;border:3px solid #22c55e;border-radius:7px;pointer-events:none;box-shadow:0 0 0 1000px rgba(0,0,0,0.4)"></div>
     </div>
     <div style="padding:12px;background:var(--card)">
-      <p id="camStatus" role="status" style="display:none"> </p>
-      <button id="captureBtn" class="main" type="button" style="width:100%">التقاط الآن يدوياً</button>
-      <button id="closeCam" type="button" style="width:100%;margin-top:6px">إلغاء</button>
+      <button id="closeCam" type="button" style="width:100%">إغلاق الكاميرا</button>
     </div>
   </div>
   <canvas id="camCanvas" hidden></canvas>
 </div>
 
-<!-- نافذة عرض بيانات الفرد وصور الهوية -->
+<!-- نافذة عرض بيانات الفرد وصور الهوية مع زر التعديل -->
 <div id="personModal" class="lg" hidden style="background:rgba(0,0,0,0.6)">
   <div class="lgb" style="background:var(--card);padding:20px;border-radius:12px;max-height:90vh;overflow-y:auto">
     <h2 id="pmName" style="margin-top:0;color:var(--acc)"></h2>
@@ -198,7 +194,10 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
       <p style="font-weight:bold;margin:4px 0">صورة الظهر:</p>
       <div id="pmBack" style="text-align:center;background:var(--bg);border:1px dashed var(--line);padding:10px;border-radius:8px;min-height:80px">لا توجد صورة</div>
     </div>
-    <button id="closePm" class="main" type="button" style="width:100%;margin-top:14px">إغلاق</button>
+    <div class="acts" style="margin-top:14px">
+      <button id="editPersonImages" class="main" type="button" style="flex:1">تعديل الصور</button>
+      <button id="closePm" type="button" style="flex:1">إغلاق</button>
+    </div>
   </div>
 </div>
 
@@ -297,7 +296,7 @@ $("imp").onclick=function(){
     store();render();$("bk").value=""
   }catch(e){$("bk").value="";$("bk").placeholder="النص غير صالح. الصق النسخة الاحتياطية كاملة."}
 };
-var MN=["الأول","الثاني","الثالث","الرابع","الخامس","السادس","السابع","الثامن","التاسع","العاشر","الحادي عشر","الثاني عشر"],HD=["طحين","زيت","سكر","معجون","رز","بقوليات"],HDR=HD,HDW=["حليب","طحين","سكر","شاي","زيت"],cur=null;
+var MN=["الأول","الثاني","الثالث","الرابع","الخامس","السادس","السابع","الثامن","التاسع","العاشر","الحادي عشر","الثاني عشر"],HD=["طحين","زيت","سكر","معجون","رز","بقوليات"],HDR=HD,HDW=["حليب","طحين","سكر","شاي","زيت"],cur=null,currentModalPerson=null;
 function mk(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function show(id,f){from=f||"home";$("ef").hidden=true;$("idssec").hidden=true;$("db").dataset.s="";$("db").textContent="حذف المواطن";
   var x=data.filter(function(y){return y.id===id})[0];if(!x)return;cur=x;
@@ -340,6 +339,7 @@ function renderPersonsList(x){
 }
 
 function openPersonModal(p){
+  currentModalPerson = p;
   $("pmName").textContent = p.name || "فرد بدون اسم";
   var fDiv = $("pmFront"), bDiv = $("pmBack");
   fDiv.innerHTML = ""; bDiv.innerHTML = "";
@@ -358,7 +358,15 @@ function openPersonModal(p){
   $("personModal").hidden = false;
 }
 
-$("closePm").onclick = function(){ $("personModal").hidden = true; };
+$("closePm").onclick = function(){ $("personModal").hidden = true; currentModalPerson=null; };
+
+$("editPersonImages").onclick = function(){
+  if(!currentModalPerson) return;
+  $("personModal").hidden = true;
+  $("idssec").hidden = false;
+  buildIdsInputs();
+  $("idssec").scrollIntoView({behavior:'smooth'});
+};
 
 $("idbs").onclick = function(){
   var sec = $("idssec");
@@ -371,12 +379,11 @@ var activeCamTarget = null;
 var videoStream = null;
 var stabilityTimer = null;
 var previousFrame = null;
-var motionSeen = false;
 var stableSamples = 0;
 var cameraBusy = false;
 var stabilityStartedAt = 0;
-function stopStabilityDetection(){if(stabilityTimer){clearInterval(stabilityTimer);stabilityTimer=null}previousFrame=null;motionSeen=false;stableSamples=0;cameraBusy=false;stabilityStartedAt=0}
-function cameraStatus(message){var el=$("camStatus");if(el)el.textContent=message}
+
+function stopStabilityDetection(){if(stabilityTimer){clearInterval(stabilityTimer);stabilityTimer=null}previousFrame=null;stableSamples=0;cameraBusy=false;stabilityStartedAt=0}
 
 function buildIdsInputs(){
   var c = $("idsList"); c.innerHTML = "";
@@ -385,15 +392,21 @@ function buildIdsInputs(){
   for(let i=0; i<count; i++){
     var p = cur.persons[i] || {name:"", front:"", back:""};
     var wrap = document.createElement("div");
-    wrap.style.cssText = "background:var(--bg);border:1px solid var(--line);padding:8px;border-radius:8px;margin-bottom:8px;";
+    wrap.style.cssText = "background:var(--bg);border:1px solid var(--line);padding:10px;border-radius:8px;margin-bottom:10px;";
     
     wrap.innerHTML = '<label>اسم الفرد '+(i+1)+'</label>' +
-                     '<input type="text" class="pname-in" value="'+(p.name||"")+'" placeholder="الاسم الكامل">' +
-                     '<div class="two" style="margin-top:6px">' +
-                       '<div><label style="font-size:13px">صورة الوجه</label><button type="button" class="cam-trig-f" style="width:100%;margin-top:4px">كاميرا الوجه</button></div>' +
-                       '<div><label style="font-size:13px">صورة الظهر</label><button type="button" class="cam-trig-b" style="width:100%;margin-top:4px">كاميرا الظهر</button></div>' +
+                     '<input type="text" class="pname-in" value="'+(p.name||"")+'" placeholder="الاسم الكامل" style="margin-bottom:8px">' +
+                     '<div class="two">' +
+                       '<div>' +
+                         '<label style="font-size:13px">صورة الوجه</label>' +
+                         '<button type="button" class="cam-trig-f" style="width:100%;margin-top:2px;font-size:13px">كاميرا الوجه</button>' +
+                       '</div>' +
+                       '<div>' +
+                         '<label style="font-size:13px">صورة الظهر</label>' +
+                         '<button type="button" class="cam-trig-b" style="width:100%;margin-top:2px;font-size:13px">كاميرا الظهر</button>' +
+                       '</div>' +
                      '</div>' +
-                     '<div class="pstatus" style="font-size:12px;color:var(--acc);margin-top:4px">'+(p.front||p.back?'مرفوع مسبقاً ✓':'')+'</div>';
+                     '<div class="pstatus" style="font-size:12px;color:var(--acc);margin-top:6px">'+(p.front||p.back?'مرفوع مسبقاً ✓':'')+'</div>';
     c.appendChild(wrap);
     
     wrap.dataset.front = p.front || "";
@@ -409,9 +422,7 @@ function openCamera(wrap, type){
   stopStabilityDetection();
   activeCamTarget = {wrap: wrap, type: type};
   $("camModal").hidden = false;
-  cameraStatus("وجّه الهوية داخل الإطار الأخضر...");
   if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
-    cameraStatus("الكاميرا غير مدعومة هنا. افتح الموقع عبر HTTPS أو متصفح حديث.");
     return;
   }
   navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}},audio:false}).then(function(stream){
@@ -422,22 +433,19 @@ function openCamera(wrap, type){
     function ready(){
       if(started || !video.videoWidth || !video.videoHeight)return;
       started=true;
-      cameraStatus("");
       beginStabilityDetection();
     }
     video.onloadedmetadata=ready;
     video.play().then(ready).catch(function(){});
   }).catch(function(err){
-    cameraStatus("تعذر فتح الكاميرا: "+(err&&err.message?err.message:"تحقق من إذن الكاميرا"));
     closeCameraStream();
   });
 }
 
-function getGuideCrop(video, guide, outW, outH){
+function getGuideCrop(video, guide){
   var vw=video.videoWidth, vh=video.videoHeight;
   var vr=video.getBoundingClientRect(), gr=guide.getBoundingClientRect();
   if(!vw||!vh||!vr.width||!vr.height)return null;
-  // Map the visible green frame back to the source video, accounting for object-fit: cover.
   var scale=Math.max(vr.width/vw,vr.height/vh);
   var shownW=vw*scale, shownH=vh*scale;
   var offX=(shownW-vr.width)/2, offY=(shownH-vr.height)/2;
@@ -459,36 +467,36 @@ function beginStabilityDetection(){
   stabilityTimer=setInterval(function(){
     if(!activeCamTarget || !videoStream || video.readyState<2 || cameraBusy)return;
     try{
-      var crop=getGuideCrop(video,guide,96,60); if(!crop)return;
+      var crop=getGuideCrop(video,guide); if(!crop)return;
       sampleCtx.drawImage(video,crop.sx,crop.sy,crop.sw,crop.sh,0,0,96,60);
       var pixels=sampleCtx.getImageData(0,0,96,60).data;
       var current=new Uint8Array(96*60);
       for(var i=0,j=0;i<pixels.length;i+=4,j++)current[j]=(pixels[i]*3+pixels[i+1]*6+pixels[i+2])/10;
       var mean=0; for(var m=0;m<current.length;m++)mean+=current[m]; mean/=current.length;
       var variance=0; for(var n=0;n<current.length;n++){var delta=current[n]-mean;variance+=delta*delta;} variance/=current.length;
-      if(previousFrame){
-        var diff=0;
-        for(var k=0;k<current.length;k++)diff+=Math.abs(current[k]-previousFrame[k]);
-        diff/=current.length;
-        if(Date.now()-stabilityStartedAt<1500){
-          stableSamples=0;
-        }else if(diff<12){
-          stableSamples++;
-          if(stableSamples>=6){
-            cameraBusy=true;
-            captureIdentity();
-          }
-        }else stableSamples=0;
+      
+      if(variance > 180){
+        if(previousFrame){
+          var diff=0;
+          for(var k=0;k<current.length;k++)diff+=Math.abs(current[k]-previousFrame[k]);
+          diff/=current.length;
+          if(Date.now()-stabilityStartedAt<1200){
+            stableSamples=0;
+          }else if(diff<16){
+            stableSamples++;
+            if(stableSamples>=4){
+              cameraBusy=true;
+              captureIdentityAutomatically();
+            }
+          }else stableSamples=0;
+        }
+        previousFrame=current;
+      } else {
+        stableSamples=0;
       }
-      previousFrame=current;
-    }catch(e){ /* يبقى الالتقاط اليدوي متاحاً */ }
-  },300);
+    }catch(e){}
+  },200);
 }
-$("closeCam").onclick = function(){
-  closeCameraStream();
-  $("camModal").hidden = true;
-  activeCamTarget = null;
-};
 
 function closeCameraStream(){
   stopStabilityDetection();
@@ -500,35 +508,40 @@ function closeCameraStream(){
   }
 }
 
-function captureIdentity(){
+function captureIdentityAutomatically(){
   if(!activeCamTarget)return;
   var video=$("camVideo");
   if(!video.videoWidth || !video.videoHeight){
-    cameraStatus("انتظر حتى تظهر صورة الكاميرا.");
     cameraBusy=false;return;
   }
   var canvas=$("camCanvas");
   var crop=getGuideCrop(video,$("idGuide"));
-  if(!crop){cameraBusy=false;cameraStatus("تعذر تحديد إطار الهوية، حاول مرة ثانية.");return;}
-  // Keep the captured image in the same landscape proportions as the national ID.
+  if(!crop){cameraBusy=false;return;}
   canvas.width=1200; canvas.height=757;
   var ctx=canvas.getContext("2d");
   ctx.drawImage(video,crop.sx,crop.sy,crop.sw,crop.sh,0,0,canvas.width,canvas.height);
   var dataUrl=canvas.toDataURL("image/jpeg",0.82);
-  if(activeCamTarget.type==="front"){
-    activeCamTarget.wrap.dataset.front=dataUrl;
-    activeCamTarget.wrap.querySelector(".pstatus").textContent="تم التقاط الوجه ✓";
+  
+  var targetWrap = activeCamTarget.wrap;
+  var targetType = activeCamTarget.type;
+  
+  if(targetType==="front"){
+    targetWrap.dataset.front=dataUrl;
+    targetWrap.querySelector(".pstatus").textContent="تم التقاط وجه الهوية تلقائياً ✓";
   }else{
-    activeCamTarget.wrap.dataset.back=dataUrl;
-    activeCamTarget.wrap.querySelector(".pstatus").textContent="تم التقاط الظهر ✓";
+    targetWrap.dataset.back=dataUrl;
+    targetWrap.querySelector(".pstatus").textContent="تم التقاط ظهر الهوية تلقائياً ✓";
   }
+  
   closeCameraStream();
   $("camModal").hidden=true;
   activeCamTarget=null;
 }
-$("captureBtn").onclick=function(){
-  if(!activeCamTarget)return;
-  captureIdentity();
+
+$("closeCam").onclick=function(){
+  closeCameraStream();
+  $("camModal").hidden=true;
+  activeCamTarget=null;
 };
 
 $("saveIds").onclick = function(){
