@@ -6,7 +6,7 @@
 <title>إدارة الوكالة</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#FFFFFF;--card:#F8F9FA;--ink:#1B1610;--mute:#7C6A50;--line:#E2E8F0;--acc:#A5560A;--btn:#F5A524;--btnfg:#1B1610;--thbg:#FFF3DC;--bad:#B93A2B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--bg:#FFFFFF;--card:#F8F9FA;--ink:#1B1610;--mute:#7C6A50;--line:#E2E8F0;--acc:#2F7BE5;--btn:#2F7BE5;--btnfg:#FFFFFF;--thbg:#EBF3FF;--bad:#B93A2B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Tajawal,Tahoma,Arial,sans-serif;font-size:17px;line-height:1.6}
@@ -568,7 +568,7 @@ $("tsave").onclick=function(){
   cur.t=t;var m=$("tm");
   if(store()){var y=window.scrollY;show(cur.id,from);window.scrollTo(0,y);m=$("tm");m.style.color="var(--acc)";m.textContent="تم حفظ الجدول. مجموع المبالغ: "+sum}else{m.style.color="var(--bad)";m.textContent="تعذر الحفظ."}
 };
-$("back").onclick=function(){cur=null;if(from==="inv")openInv();else if(from==="debt")openDebt();else{view("home");render()}};
+$("back").onclick=function(){cur=null;if(from==="inv")openInv();else if(from==="debt")openDebt();else{view("home","ration");render()}};
 function entOf(x){var v=x.ent;if(x.t)for(var i=11;i>=0;i--){var f=x.t[i]&&x.t[i][7];if(f!==undefined&&f!==null&&f!==""){v=f;break}}return v}
 function blkOf(x){var e=entOf(x);return e===x.ent?x.blk:Math.max(0,x.fam-e)}
 function debtOf(x){var s=0;if(x.t)x.t.forEach(function(r){s+=(r&&r[6])||0});return s}
@@ -657,6 +657,18 @@ var sec="ration",ICON={ration:'<svg width="26" height="26" viewBox="0 0 24 24" f
 function setSec(s){if(pend){clearTimeout(pt);flush()}
   sec=s;KEY=s==="welfare"?"welfare-v1":"citizens-v1";
   data=[];cur=null;sel=null;editing=null;HD=s==="welfare"?HDW:HDR;
+  
+  // تحديث الثيم ديناميكياً بناءً على القسم المختاره (أزرق للرعاية، برتقالي للتموينية)
+  if(s==="welfare"){
+    document.documentElement.style.setProperty('--acc', '#2F7BE5');
+    document.documentElement.style.setProperty('--btn', '#2F7BE5');
+    document.documentElement.style.setProperty('--thbg', '#EBF3FF');
+  } else {
+    document.documentElement.style.setProperty('--acc', '#A5560A');
+    document.documentElement.style.setProperty('--btn', '#F5A524');
+    document.documentElement.style.setProperty('--thbg', '#FFF3DC');
+  }
+
   loadStock();load();chosen=true;pull(s);
   $("q").value="";$("f").hidden=true;
   $("homeb").innerHTML=ICON[s]+"<span>"+LBL[s]+"</span>";$("ssub").textContent=LBL[s];
